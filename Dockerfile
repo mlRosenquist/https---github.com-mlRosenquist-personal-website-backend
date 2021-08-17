@@ -1,13 +1,12 @@
-FROM node:14.16.1
-
+FROM node AS builder
 WORKDIR /app
-
-COPY package.json ./
-
+COPY ./package.json ./
 RUN npm install
-
 COPY . .
+RUN npm run build
 
-EXPOSE 5000
 
-CMD [ "npm", "run", "start:prod" ]
+FROM node
+WORKDIR /app
+COPY --from=builder /app ./
+CMD ["npm", "run", "start:prod"]
