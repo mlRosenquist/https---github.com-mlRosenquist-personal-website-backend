@@ -9,7 +9,7 @@ async function bootstrap() {
   
   const config = new DocumentBuilder()
       .setTitle('backend')
-      .setDescription('backend API description')
+      .setDescription('backen API description')
       .setVersion('0.1')
       .addTag('pictures')
       .build();
