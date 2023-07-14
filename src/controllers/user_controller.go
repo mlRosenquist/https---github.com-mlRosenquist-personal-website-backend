@@ -15,17 +15,9 @@ import (
 	"golang.org/x/net/context"
 )
 
-var userCollection *mongo.Collection = configs.GetCollection(configs.DB, "users")
-var validate = validator.New()
+var userCollection *mongo.Collection = configs.GetCollection(configs.CLIENT, "users")
+var userValidate = validator.New()
 
-// HealthCheck godoc
-// @Summary Show the status of server.
-// @Description get the status of server.
-// @Tags root
-// @Accept */*
-// @Produce json
-// @Success 200 {object} map[string]interface{}
-// @Router / [get]
 func CreateUser(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var user models.User
@@ -37,7 +29,7 @@ func CreateUser(c echo.Context) error {
 	}
 
 	//use the validator library to validate required fields
-	if validationErr := validate.Struct(&user); validationErr != nil {
+	if validationErr := userValidate.Struct(&user); validationErr != nil {
 		return c.JSON(http.StatusBadRequest, responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": validationErr.Error()}})
 	}
 
@@ -87,7 +79,7 @@ func EditAUser(c echo.Context) error {
 	}
 
 	//use the validator library to validate required fields
-	if validationErr := validate.Struct(&user); validationErr != nil {
+	if validationErr := userValidate.Struct(&user); validationErr != nil {
 		return c.JSON(http.StatusBadRequest, responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: &echo.Map{"data": validationErr.Error()}})
 	}
 

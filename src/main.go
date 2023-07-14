@@ -28,6 +28,7 @@ func main() {
 	configs.ConnectDB()
 
 	routes.UserRoute(e)
+	routes.ImageRoute(e)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
