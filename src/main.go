@@ -2,9 +2,14 @@ package main
 
 import (
 	"personal-website-backend/configs"
+	"personal-website-backend/controllers"
+	"personal-website-backend/repositories"
 	"personal-website-backend/routes"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/mlRosenquist/personal-website-backend/docs" // you need to update github.com/rizalgowandy/go-swag-sample with your own project path
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // @title Echo Swagger Example API
@@ -24,11 +29,17 @@ import (
 // @schemes http
 func main() {
 	e := echo.New()
-
 	configs.ConnectDB()
 
-	routes.UserRoute(e)
-	routes.ImageRoute(e)
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	routes.ImageRoute(e, controllers.ImageController{
+		FileRepository: &repositories.MongoFileRepository{},
+	})
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
